@@ -3,25 +3,33 @@
 import * as Http from "./lib/Http.res.js";
 
 function post_example() {
-  return Http.post(Http.set_body(Http.from_url("https://jsonplaceholder.typicode.com/posts"), {
+  return Http.post(Http.set_body(Http.add_header(Http.from_url("https://jsonplaceholder.typicode.com/posts", undefined), {
+                      Authorization: "Bearer {token}"
+                    }), {
                   name: 12312.1,
                   major: "CS"
                 }));
 }
 
 function get_example() {
-  return Http.get(Http.set_params(Http.from_url("https://jsonplaceholder.typicode.com/posts/1"), {
-                  page: 2,
-                  limit: 50
-                }));
-}
-
-var post_result = await post_example();
-
-if (post_result.TAG === "Ok") {
-  console.log("do some with", post_result._0);
-} else {
-  console.error("Something went wrong");
+  return Http.get(Http.use(Http.use(Http.set_params(Http.from_url("https://jsonplaceholder.typicode.com/posts/1", undefined), {
+                          page: 2,
+                          limit: 50
+                        }), (function ($$fetch) {
+                        return async function (request) {
+                          console.log("before request 1");
+                          var response = await $$fetch(request);
+                          console.log("after request 1");
+                          return response;
+                        };
+                      })), (function ($$fetch) {
+                    return async function (request) {
+                      console.log("before request 2");
+                      var response = await $$fetch(request);
+                      console.log("after request 2");
+                      return response;
+                    };
+                  })));
 }
 
 var get_result = await get_example();
@@ -38,7 +46,6 @@ export {
   $$Request ,
   post_example ,
   get_example ,
-  post_result ,
   get_result ,
 }
-/* post_result Not a pure module */
+/* get_result Not a pure module */

@@ -7,7 +7,7 @@ module Common = {
     json: unit => promise<unknown>,
     text: unit => promise<string>,
   }
-  type headers = {"Content-Type": string}
+  type headers = array<(string, string)>
   type method = GET | POST | PUT | DELETE | PATCH
   type responseType = [#basic | #cors | #default | #error | #opaque | #opaqueredirect]
 }
