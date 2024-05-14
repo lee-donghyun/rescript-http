@@ -12,22 +12,15 @@ function post_example() {
 }
 
 function get_example() {
-  return Http.get(Http.use(Http.use(Http.set_params(Http.from_url("https://jsonplaceholder.typicode.com/posts/1", undefined), {
-                          page: 2,
-                          limit: 50
-                        }), (function ($$fetch) {
-                        return async function (request) {
-                          console.log("before request 1");
-                          var response = await $$fetch(request);
-                          console.log("after request 1");
-                          return response;
-                        };
-                      })), (function ($$fetch) {
+  return Http.get(Http.use(Http.set_params(Http.from_url("https://jsonplaceholder.typicode.com/posts/1", undefined), {
+                      page: 2,
+                      limit: 50
+                    }), (function (next) {
                     return async function (request) {
-                      console.log("before request 2");
-                      var response = await $$fetch(request);
-                      console.log("after request 2");
-                      return response;
+                      console.log("request header", request.headers);
+                      var res = await next(request);
+                      console.log("after request 1", res.headers.at(1));
+                      return res;
                     };
                   })));
 }
@@ -40,6 +33,26 @@ if (get_result.TAG === "Ok") {
   console.error("Something went wrong");
 }
 
+function make_request(url) {
+  return Http.use(Http.add_header(Http.from_url(url, undefined), {
+                  Authorization: "Bearer {token}"
+                }), (function (next) {
+                return async function (request) {
+                  console.log("request url", request.url);
+                  return await next(request);
+                };
+              }));
+}
+
+var naver_page = await Http.get(make_request("https://www.naver.com"));
+
+console.log(naver_page);
+
+var ApiExample = {
+  make_request: make_request,
+  naver_page: naver_page
+};
+
 var $$Request;
 
 export {
@@ -47,5 +60,6 @@ export {
   post_example ,
   get_example ,
   get_result ,
+  ApiExample ,
 }
 /* get_result Not a pure module */
