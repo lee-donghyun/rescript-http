@@ -92,15 +92,28 @@ async function get(request) {
 }
 
 async function post(request) {
-  var body = request.body;
-  var res = await fetch(request.url, {
-        body: body !== undefined ? body : "",
-        headers: [[
-              "Content-Type",
-              "application/json"
-            ]].concat(request.headers),
-        method: "POST"
-      });
+  var combined = Belt_Array.reduce(request.config.middlewares, (function (raw_request) {
+          var body = raw_request.body;
+          return fetch(raw_request.url, {
+                      body: body !== undefined ? body : "",
+                      headers: [[
+                            "Content-Type",
+                            "application/json"
+                          ]].concat(raw_request.headers),
+                      method: "POST"
+                    });
+        }), (function (acc, middleware) {
+          return middleware(acc);
+        }));
+  var raw_request_url = request.url;
+  var raw_request_body = request.body;
+  var raw_request_headers = request.headers;
+  var raw_request = {
+    url: raw_request_url,
+    body: raw_request_body,
+    headers: raw_request_headers
+  };
+  var res = await combined(raw_request);
   if (!res.ok) {
     return {
             TAG: "Error",

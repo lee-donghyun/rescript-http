@@ -77,17 +77,28 @@ let get = async (request: request) => {
 }
 
 let post = async (request: request) => {
-  let res = await Fetch.fetch(
-    request.url,
-    ~requestInit={
-      method: Fetch.Common.POST,
-      headers: [("Content-Type", "application/json")]->Array.concat(request.headers),
-      body: switch request.body {
-      | Some(body) => body
-      | None => ""
-      },
-    },
+  let combined = request.config.middlewares->Belt.Array.reduce(
+    (raw_request: raw_request) =>
+      Fetch.fetch(
+        raw_request.url,
+        ~requestInit={
+          method: Fetch.Common.POST,
+          headers: [("Content-Type", "application/json")]->Array.concat(raw_request.headers),
+          body: switch raw_request.body {
+          | Some(body) => body
+          | None => ""
+          },
+        },
+      ),
+    (acc, middleware) => acc->middleware,
   )
+
+  let raw_request: raw_request = {
+    url: request.url,
+    body: request.body,
+    headers: request.headers,
+  }
+  let res = await combined(raw_request)
 
   switch res.ok {
   | true => {
