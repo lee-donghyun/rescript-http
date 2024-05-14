@@ -1,13 +1,13 @@
+external infer_helper: unknown => 'inferred = "%identity"
+external jsonify_helper: 'json => JSON.t = "%identity"
+let arraify_helper: 'object => array<(string, string)> = %raw(`(json) => Object.entries(json)`)
+
 type raw_request = {url: string, body: option<string>, headers: array<(string, string)>}
 type middleware = (raw_request => promise<Fetch.response>) => raw_request => promise<Fetch.response>
 type config = {timeout: option<int>, middlewares: array<middleware>}
 type request = {...raw_request, config: config}
 
-external infer_helper: unknown => 'inferred = "%identity"
-external jsonify_helper: 'json => JSON.t = "%identity"
-let arraify_helper: 'object => array<(string, string)> = %raw(`(json) => Object.entries(json)`)
-
-let from_url = (url: string, ~timeout: option<int>=None) => {
+let from_url = (url, ~timeout=None) => {
   url,
   body: None,
   headers: [],
@@ -17,12 +17,12 @@ let from_url = (url: string, ~timeout: option<int>=None) => {
   },
 }
 
-let add_header = (request: request, header: 'object) => {
+let add_header = (request, header) => {
   ...request,
   headers: request.headers->Array.concat(header->arraify_helper),
 }
 
-let set_params = (request: request, params: 'json) => {
+let set_params = (request, params) => {
   ...request,
   url: request.url
   ->String.concat("?")
@@ -34,12 +34,12 @@ let set_params = (request: request, params: 'json) => {
   ),
 }
 
-let set_body = (request: request, body: 'json) => {
+let set_body = (request, body) => {
   ...request,
   body: Some(body->jsonify_helper->JSON.stringify),
 }
 
-let use = (request: request, middleware: middleware) => {
+let use = (request, middleware) => {
   ...request,
   config: {
     ...request.config,
@@ -47,7 +47,7 @@ let use = (request: request, middleware: middleware) => {
   },
 }
 
-let get = async (request: request) => {
+let get = async request => {
   let combined = request.config.middlewares->Belt.Array.reduce(
     (raw_request: raw_request) =>
       Fetch.fetch(
@@ -60,7 +60,7 @@ let get = async (request: request) => {
     (acc, middleware) => acc->middleware,
   )
 
-  let raw_request: raw_request = {
+  let raw_request = {
     url: request.url,
     body: request.body,
     headers: request.headers,
@@ -76,7 +76,7 @@ let get = async (request: request) => {
   }
 }
 
-let post = async (request: request) => {
+let post = async request => {
   let combined = request.config.middlewares->Belt.Array.reduce(
     (raw_request: raw_request) =>
       Fetch.fetch(
@@ -93,7 +93,7 @@ let post = async (request: request) => {
     (acc, middleware) => acc->middleware,
   )
 
-  let raw_request: raw_request = {
+  let raw_request = {
     url: request.url,
     body: request.body,
     headers: request.headers,

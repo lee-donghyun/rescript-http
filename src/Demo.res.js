@@ -2,64 +2,15 @@
 
 import * as Http from "./lib/Http.res.js";
 
-function post_example() {
-  return Http.post(Http.set_body(Http.add_header(Http.from_url("https://jsonplaceholder.typicode.com/posts", undefined), {
-                      Authorization: "Bearer {token}"
-                    }), {
-                  name: 12312.1,
-                  major: "CS"
-                }));
-}
+var url = "...";
 
-function get_example() {
-  return Http.get(Http.use(Http.set_params(Http.from_url("https://jsonplaceholder.typicode.com/posts/1", undefined), {
-                      page: 2,
-                      limit: 50
-                    }), (function (next) {
-                    return async function (request) {
-                      console.log("request header", request.headers);
-                      var res = await next(request);
-                      console.log("after request 1", res.headers.at(1));
-                      return res;
-                    };
-                  })));
-}
-
-var get_result = await get_example();
-
-if (get_result.TAG === "Ok") {
-  console.log("do some with", get_result._0);
-} else {
-  console.error("Something went wrong");
-}
-
-function make_request(url) {
-  return Http.use(Http.add_header(Http.from_url(url, undefined), {
-                  Authorization: "Bearer {token}"
-                }), (function (next) {
-                return async function (request) {
-                  console.log("request url", request.url);
-                  return await next(request);
-                };
-              }));
-}
-
-var naver_page = await Http.get(make_request("https://www.naver.com"));
-
-console.log(naver_page);
-
-var ApiExample = {
-  make_request: make_request,
-  naver_page: naver_page
-};
-
-var $$Request;
+var page = await Http.get(Http.set_params(Http.from_url(url, undefined), {
+          page: 1,
+          limit: 20
+        }));
 
 export {
-  $$Request ,
-  post_example ,
-  get_example ,
-  get_result ,
-  ApiExample ,
+  url ,
+  page ,
 }
-/* get_result Not a pure module */
+/* page Not a pure module */
