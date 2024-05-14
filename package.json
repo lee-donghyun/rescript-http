@@ -1,6 +1,7 @@
 {
   "name": "rescript-http",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "res:build": "rescript",
     "res:clean": "rescript clean",
