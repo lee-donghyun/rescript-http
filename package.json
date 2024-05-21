@@ -2,13 +2,25 @@
   "name": "rescript-http",
   "version": "0.0.0",
   "type": "module",
+  "main": "src/lib/Http.res",
   "scripts": {
     "res:build": "rescript",
     "res:clean": "rescript clean",
     "res:dev": "rescript -w"
   },
   "keywords": [
-    "rescript"
+    "rescript",
+    "fetch",
+    "http",
+    "client",
+    "lightweight",
+    "axios",
+    "superagent",
+    "request"
+  ],
+  "homepage": "https://github.com/lee-donghyun/rescript-http",
+  "files": [
+    "src/lib"
   ],
   "description": "A lightweight HTTP client library for ReScript, designed to be used immediately.",
   "author": "",
