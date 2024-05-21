@@ -7,10 +7,14 @@ type page = {
   total: int,
 }
 
-let url = "..."
+let url = "https://jsonplaceholder.typicode.com/posts/1"
 
 let page: result<page, int> =
   await url
   ->from_url
-  ->set_params({"page": 1, "limit": 20})
-  ->get
+  ->delete
+
+switch page {
+| Ok(page) => Js.log(page)
+| Error(err) => Js.log(err)
+}

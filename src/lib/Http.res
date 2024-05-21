@@ -47,25 +47,33 @@ let use = (request, middleware) => {
   },
 }
 
-let get = async request => {
-  let combined = request.config.middlewares->Belt.Array.reduce(
-    (raw_request: raw_request) =>
-      Fetch.fetch(
-        raw_request.url,
-        ~requestInit={
-          method: Fetch.Common.GET,
-          headers: raw_request.headers,
-        },
-      ),
+let combine_middlewares = (request, ~requestInit) =>
+  request.config.middlewares->Belt.Array.reduce(
+    (raw_request: raw_request) => Fetch.fetch(raw_request.url, ~requestInit),
     (acc, middleware) => acc->middleware,
   )
 
+let get_raw_request = request => {
   let raw_request = {
     url: request.url,
     body: request.body,
     headers: request.headers,
   }
-  let res = await combined(raw_request)
+  raw_request
+}
+
+let get = async request => {
+  let combined = request->combine_middlewares(
+    ~requestInit={
+      method: Fetch.Common.GET,
+      headers: request.headers,
+    },
+  )
+
+  let res =
+    await request
+    ->get_raw_request
+    ->combined
 
   switch res.ok {
   | true => {
@@ -77,28 +85,95 @@ let get = async request => {
 }
 
 let post = async request => {
-  let combined = request.config.middlewares->Belt.Array.reduce(
-    (raw_request: raw_request) =>
-      Fetch.fetch(
-        raw_request.url,
-        ~requestInit={
-          method: Fetch.Common.POST,
-          headers: [("Content-Type", "application/json")]->Array.concat(raw_request.headers),
-          body: switch raw_request.body {
-          | Some(body) => body
-          | None => ""
-          },
-        },
-      ),
-    (acc, middleware) => acc->middleware,
+  let combined = request->combine_middlewares(
+    ~requestInit={
+      method: Fetch.Common.POST,
+      headers: [("Content-Type", "application/json")]->Array.concat(request.headers),
+      body: switch request.body {
+      | Some(body) => body
+      | None => ""
+      },
+    },
   )
 
-  let raw_request = {
-    url: request.url,
-    body: request.body,
-    headers: request.headers,
+  let res =
+    await request
+    ->get_raw_request
+    ->combined
+
+  switch res.ok {
+  | true => {
+      let json = await res.json()
+      Ok(json->infer_helper)
+    }
+  | false => Error(res.status)
   }
-  let res = await combined(raw_request)
+}
+
+let put = async request => {
+  let combined = request->combine_middlewares(
+    ~requestInit={
+      method: Fetch.Common.PUT,
+      headers: [("Content-Type", "application/json")]->Array.concat(request.headers),
+      body: switch request.body {
+      | Some(body) => body
+      | None => ""
+      },
+    },
+  )
+
+  let res =
+    await request
+    ->get_raw_request
+    ->combined
+
+  switch res.ok {
+  | true => {
+      let json = await res.json()
+      Ok(json->infer_helper)
+    }
+  | false => Error(res.status)
+  }
+}
+
+let delete = async request => {
+  let combined = request->combine_middlewares(
+    ~requestInit={
+      method: Fetch.Common.DELETE,
+      headers: request.headers,
+    },
+  )
+
+  let res =
+    await request
+    ->get_raw_request
+    ->combined
+
+  switch res.ok {
+  | true => {
+      let json = await res.json()
+      Ok(json->infer_helper)
+    }
+  | false => Error(res.status)
+  }
+}
+
+let patch = async request => {
+  let combined = request->combine_middlewares(
+    ~requestInit={
+      method: Fetch.Common.PATCH,
+      headers: [("Content-Type", "application/json")]->Array.concat(request.headers),
+      body: switch request.body {
+      | Some(body) => body
+      | None => ""
+      },
+    },
+  )
+
+  let res =
+    await request
+    ->get_raw_request
+    ->combined
 
   switch res.ok {
   | true => {

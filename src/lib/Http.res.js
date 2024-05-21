@@ -60,24 +60,28 @@ function use(request, middleware) {
         };
 }
 
+function combine_middlewares(request, requestInit) {
+  return Belt_Array.reduce(request.config.middlewares, (function (raw_request) {
+                return fetch(raw_request.url, requestInit);
+              }), (function (acc, middleware) {
+                return middleware(acc);
+              }));
+}
+
+function get_raw_request(request) {
+  return {
+          url: request.url,
+          body: request.body,
+          headers: request.headers
+        };
+}
+
 async function get(request) {
-  var combined = Belt_Array.reduce(request.config.middlewares, (function (raw_request) {
-          return fetch(raw_request.url, {
-                      headers: raw_request.headers,
-                      method: "GET"
-                    });
-        }), (function (acc, middleware) {
-          return middleware(acc);
-        }));
-  var raw_request_url = request.url;
-  var raw_request_body = request.body;
-  var raw_request_headers = request.headers;
-  var raw_request = {
-    url: raw_request_url,
-    body: raw_request_body,
-    headers: raw_request_headers
-  };
-  var res = await combined(raw_request);
+  var combined = combine_middlewares(request, {
+        headers: request.headers,
+        method: "GET"
+      });
+  var res = await combined(get_raw_request(request));
   if (!res.ok) {
     return {
             TAG: "Error",
@@ -92,28 +96,83 @@ async function get(request) {
 }
 
 async function post(request) {
-  var combined = Belt_Array.reduce(request.config.middlewares, (function (raw_request) {
-          var body = raw_request.body;
-          return fetch(raw_request.url, {
-                      body: body !== undefined ? body : "",
-                      headers: [[
-                            "Content-Type",
-                            "application/json"
-                          ]].concat(raw_request.headers),
-                      method: "POST"
-                    });
-        }), (function (acc, middleware) {
-          return middleware(acc);
-        }));
-  var raw_request_url = request.url;
-  var raw_request_body = request.body;
-  var raw_request_headers = request.headers;
-  var raw_request = {
-    url: raw_request_url,
-    body: raw_request_body,
-    headers: raw_request_headers
-  };
-  var res = await combined(raw_request);
+  var body = request.body;
+  var combined = combine_middlewares(request, {
+        body: body !== undefined ? body : "",
+        headers: [[
+              "Content-Type",
+              "application/json"
+            ]].concat(request.headers),
+        method: "POST"
+      });
+  var res = await combined(get_raw_request(request));
+  if (!res.ok) {
+    return {
+            TAG: "Error",
+            _0: res.status
+          };
+  }
+  var json = await res.json();
+  return {
+          TAG: "Ok",
+          _0: json
+        };
+}
+
+async function put(request) {
+  var body = request.body;
+  var combined = combine_middlewares(request, {
+        body: body !== undefined ? body : "",
+        headers: [[
+              "Content-Type",
+              "application/json"
+            ]].concat(request.headers),
+        method: "PUT"
+      });
+  var res = await combined(get_raw_request(request));
+  if (!res.ok) {
+    return {
+            TAG: "Error",
+            _0: res.status
+          };
+  }
+  var json = await res.json();
+  return {
+          TAG: "Ok",
+          _0: json
+        };
+}
+
+async function $$delete(request) {
+  var combined = combine_middlewares(request, {
+        headers: request.headers,
+        method: "DELETE"
+      });
+  var res = await combined(get_raw_request(request));
+  if (!res.ok) {
+    return {
+            TAG: "Error",
+            _0: res.status
+          };
+  }
+  var json = await res.json();
+  return {
+          TAG: "Ok",
+          _0: json
+        };
+}
+
+async function patch(request) {
+  var body = request.body;
+  var combined = combine_middlewares(request, {
+        body: body !== undefined ? body : "",
+        headers: [[
+              "Content-Type",
+              "application/json"
+            ]].concat(request.headers),
+        method: "PATCH"
+      });
+  var res = await combined(get_raw_request(request));
   if (!res.ok) {
     return {
             TAG: "Error",
@@ -136,5 +195,8 @@ export {
   use ,
   get ,
   post ,
+  $$delete ,
+  put ,
+  patch ,
 }
 /* No side effect */

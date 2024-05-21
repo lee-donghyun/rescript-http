@@ -2,12 +2,11 @@
 
 import * as Http from "./lib/Http.res.js";
 
-var url = "...";
+var url = "https://jsonplaceholder.typicode.com/posts/1";
 
-var page = await Http.get(Http.set_params(Http.from_url(url, undefined), {
-          page: 1,
-          limit: 20
-        }));
+var page = await Http.$$delete(Http.from_url(url, undefined));
+
+console.log(page._0);
 
 export {
   url ,

@@ -12,3 +12,6 @@ let set_body: (request, 'json) => request
 let use: (request, middleware) => request
 let get: request => promise<result<'data, int>>
 let post: request => promise<result<'data, int>>
+let delete: request => promise<result<'data, int>>
+let put: request => promise<result<'data, int>>
+let patch: request => promise<result<'data, int>>
