@@ -1,7 +1,8 @@
 # rescript-http
 
 rescript를 위한 경량 http 클라이언트 라이브러리. 당장 사용할 수 있도록 설계되었습니다.
-[English](./README.ko.md)
+
+[English](./README.md)
 
 ```res
 open Http
