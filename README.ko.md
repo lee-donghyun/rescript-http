@@ -29,6 +29,21 @@ let page: result<page, int> =
 - [Object](https://rescript-lang.org/docs/manual/latest/object) 타입을 사용하여 쿼리스트링과 바디를 쉽게 생성할 수 있습니다.
 - [Pipe(->)](https://rescript-lang.org/docs/manual/latest/pipe)를 사용하여 쉽게 사용할 수 있습니다.
 
+## 설치
+
+```sh
+npm install rescript-http
+```
+
+`rescript-http` 을 `bsconfig.json`의 `bs-dependencies`에 추가합니다.
+
+```json
+{
+  "bs-dependencies": ["rescript-http"],
+  "bsc-flags": ["-open RescriptHttp"] // 전역으로 사용할 경우 추가합니다.
+}
+```
+
 ## 모듈
 
 ### from_url

@@ -29,6 +29,21 @@ let page: result<page, int> =
 - Easily create query strings and bodies using the [Object](https://rescript-lang.org/docs/manual/latest/object) type.
 - Simple to use with [Pipe (->)](https://rescript-lang.org/docs/manual/latest/pipe).
 
+## Installation
+
+```sh
+npm install rescript-http
+```
+
+Then add `rescript-http` to `bs-dependencies` in your `bsconfig.json`.
+
+```json
+{
+  "bs-dependencies": ["rescript-http"],
+  "bsc-flags": ["-open RescriptHttp"] // optional
+}
+```
+
 ## Modules
 
 ### from_url
