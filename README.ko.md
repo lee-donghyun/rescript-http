@@ -1,8 +1,7 @@
 # rescript-http
 
-A lightweight HTTP client library for ReScript, designed to be used immediately.
-
-[한국어](./README.ko.md)
+rescript를 위한 경량 http 클라이언트 라이브러리. 당장 사용할 수 있도록 설계되었습니다.
+[English](./README.ko.md)
 
 ```res
 open Http
@@ -23,17 +22,17 @@ let page: result<page, int> =
   ->get
 ```
 
-## Overview
+## 개요
 
-- Based on JavaScript's [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
-- Easily create query strings and bodies using the [Object](https://rescript-lang.org/docs/manual/latest/object) type.
-- Simple to use with [Pipe (->)](https://rescript-lang.org/docs/manual/latest/pipe).
+- javascript [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) 기반
+- [Object](https://rescript-lang.org/docs/manual/latest/object) 타입을 사용하여 쿼리스트링과 바디를 쉽게 생성할 수 있습니다.
+- [Pipe(->)](https://rescript-lang.org/docs/manual/latest/pipe)를 사용하여 쉽게 사용할 수 있습니다.
 
-## Modules
+## 모듈
 
 ### from_url
 
-Takes a URL and creates a Request object.
+url을 받아서 Request 객체를 생성합니다.
 
 ```rescript
 " ... " -> from_url
@@ -41,7 +40,7 @@ Takes a URL and creates a Request object.
 
 ### set_params
 
-Takes an object and creates query strings.
+object를 받아서 쿼리스트링을 생성합니다.
 
 ```rescript
 " ... " -> from_url -> set_params({ "page": 1, "limit": 20 })
@@ -49,7 +48,7 @@ Takes an object and creates query strings.
 
 ### add_headers
 
-Takes an object and creates headers.
+object를 받아서 헤더를 생성합니다.
 
 ```rescript
 " ... " -> from_url -> add_headers({ "Authorization": " ... " })
@@ -57,7 +56,7 @@ Takes an object and creates headers.
 
 ### set_body
 
-Takes an object and creates a body.
+object를 받아서 바디를 생성합니다.
 
 ```rescript
 " ... " -> from_url -> set_body({ "name": " ... " })
@@ -65,7 +64,7 @@ Takes an object and creates a body.
 
 ### get
 
-Sends a request using the Request object and returns a JSON response.
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 
 ```rescript
 let response:result<data,int> = await " ... " -> from_url -> get
@@ -73,7 +72,7 @@ let response:result<data,int> = await " ... " -> from_url -> get
 
 ### post
 
-Sends a request using the Request object and returns a JSON response.
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 
 ```rescript
 let response:result<data,int> = await " ... " -> from_url -> post
@@ -81,7 +80,7 @@ let response:result<data,int> = await " ... " -> from_url -> post
 
 ### put
 
-Sends a request using the Request object and returns a JSON response.
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 
 ```rescript
 let response:result<data,int> = await " ... " -> from_url -> put
@@ -89,7 +88,7 @@ let response:result<data,int> = await " ... " -> from_url -> put
 
 ### patch
 
-Sends a request using the Request object and returns a JSON response.
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 
 ```rescript
 let response:result<data,int> = await " ... " -> from_url -> patch
@@ -97,7 +96,7 @@ let response:result<data,int> = await " ... " -> from_url -> patch
 
 ### delete
 
-Sends a request using the Request object and returns a JSON response.
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 
 ```rescript
 let response:result<data,int> = await " ... " -> from_url -> delete
@@ -105,7 +104,7 @@ let response:result<data,int> = await " ... " -> from_url -> delete
 
 ### use
 
-Allows the use of middleware.
+미들웨어를 사용할 수 있습니다.
 
 ```rescript
 let logger_middleware = next => async request => {

@@ -10,6 +10,7 @@
   "keywords": [
     "rescript"
   ],
+  "description": "A lightweight HTTP client library for ReScript, designed to be used immediately.",
   "author": "",
   "license": "MIT",
   "dependencies": {
