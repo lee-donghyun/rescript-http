@@ -77,6 +77,30 @@ request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
 let response:result<data,int> = await " ... " -> from_url -> post
 ```
 
+### put
+
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
+
+```rescript
+let response:result<data,int> = await " ... " -> from_url -> put
+```
+
+### patch
+
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
+
+```rescript
+let response:result<data,int> = await " ... " -> from_url -> patch
+```
+
+### delete
+
+request 객체를 이용해 요청을 보내고 json 응답을 반환합니다.
+
+```rescript
+let response:result<data,int> = await " ... " -> from_url -> delete
+```
+
 ### use
 
 미들웨어를 사용할 수 있습니다.
