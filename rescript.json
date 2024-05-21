@@ -3,7 +3,8 @@
   "namespace": true,
   "sources": {
     "dir": "src",
-    "subdirs": true
+    "subdirs": true,
+    "public": ["Http"]
   },
   "package-specs": {
     "module": "esmodule",
