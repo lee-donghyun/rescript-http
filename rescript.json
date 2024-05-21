@@ -1,11 +1,18 @@
 {
   "name": "rescript-http",
   "namespace": true,
-  "sources": {
-    "dir": "src",
-    "subdirs": true,
-    "public": ["Http"]
-  },
+  "sources": [
+    {
+      "dir": "src/lib",
+      "subdirs": true,
+      "public": ["Http"]
+    },
+    {
+      "dir": "src/example",
+      "subdirs": true,
+      "public": []
+    }
+  ],
   "package-specs": {
     "module": "esmodule",
     "in-source": true
