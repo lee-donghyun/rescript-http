@@ -20,7 +20,8 @@
   ],
   "homepage": "https://github.com/lee-donghyun/rescript-http",
   "files": [
-    "src/lib"
+    "src/lib",
+    "rescript.json"
   ],
   "description": "A lightweight HTTP client library for ReScript, designed to be used immediately.",
   "author": "",
